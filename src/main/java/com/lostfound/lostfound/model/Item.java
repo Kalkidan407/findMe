@@ -3,6 +3,7 @@ package com.lostfound.lostfound.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import jakarta.annotation.Generated;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +12,9 @@ import lombok.Setter;
 @Document(collection = "items")
 public class Item {
 
+    
     @Id
+    
     private String id;
     private String name;
     private String description;
