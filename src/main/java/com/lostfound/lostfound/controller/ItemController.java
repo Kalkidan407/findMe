@@ -13,12 +13,12 @@ import java.util.Optional;
 @RequestMapping("/api/items")
 public class ItemController {
 
-    private  ItemRepository itemRepository;
+   
     private  ItemService itemService;
 
-    // public ItemController(ItemRepository itemRepository) {
-    //     this.itemRepository = itemRepository;
-    // }
+    public ItemController(ItemService itemService) {
+        this.itemService = itemService;
+    }
 
     @GetMapping
     public List<Item> getAllItems() {

@@ -5,13 +5,14 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
+
 
 import com.lostfound.lostfound.model.Item;
 import com.lostfound.lostfound.repository.ItemRepository;
 
 @Service
 public class ItemService {
+
   @Autowired
   private  ItemRepository itemRepository;
 
