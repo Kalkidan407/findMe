@@ -1,26 +1,30 @@
 package com.lostfound.lostfound.model;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-import jakarta.annotation.Generated;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Table;
+
 import lombok.Getter;
 import lombok.Setter;
 
+@Entity
+
 @Setter
 @Getter
-@Document(collection = "items")
+@Table( name ="item")
 public class Item {
 
-    
     @Id
-    
-    private String id;
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private String description;
     private String locationFound;
     private String photoUrl;
-    private boolean claimed;
+    private boolean status;
 
-    // Constructors, Getters, and Setters
+  
 }

@@ -1,50 +1,34 @@
 package com.lostfound.lostfound.controller;
 
-
 import org.springframework.web.bind.annotation.*;
-
-import com.lostfound.lostfound.model.Item;
-import com.lostfound.lostfound.repository.ItemRepository;
-import com.lostfound.lostfound.service.ItemService;
-
 import java.util.List;
-import java.util.Optional;
+import com.lostfound.lostfound.model.Item;
+import com.lostfound.lostfound.service.ItemService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/items")
+@RequiredArgsConstructor
 public class ItemController {
 
-   
-    private  ItemService itemService;
-
-    public ItemController(ItemService itemService) {
-        this.itemService = itemService;
-    }
+    private final ItemService itemService;
 
     @GetMapping
     public List<Item> getAllItems() {
         return itemService.getAllItems();
     }
 
-    @GetMapping("/{id}")
-    public Optional<Item> getItemById(@PathVariable("id") String id){
-        return itemService.getItemById(id);
-    }
-
-   @PutMapping("/{id}")
-    public Item updateItem(@PathVariable String id, @RequestBody Item updatedItem){
-        return itemService.updateItem(id, updatedItem);
-    }
+  @GetMapping("/{id}")
+  public Item getItemById(@PathVariable Long id){
+    return itemService.getItemById(id)
+         .orElseThrow(() -> new RuntimeException("Item not found with id: " + id));
+  }
 
     @PostMapping
-    public Item addItem(@RequestBody Item item) {
+    public Item createItem(@RequestBody Item item) {
         return itemService.addItem(item);
     }
-
-    @DeleteMapping("/{id}")
-      public String deleteItem(@PathVariable String id){
-           itemService.deleteItem(id);
-           return "Item with id" + id + "deleted successfully!";
-      }
-    
 }
