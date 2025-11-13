@@ -20,37 +20,38 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
     // User-related endpoints can be added here
 
-    private final UserService userService;
+private final UserService userService;
 
 
-  @PostMapping
+@PostMapping
   public User createUser(@RequestBody User user){
     return userService.createUser(user);
   }
 
 
-   @GetMapping
+@GetMapping
    public List<User> getAlUsers() {
        return userService.getAllUser();
    }
 
-    @GetMapping("/{id}")
+@GetMapping("/id/{id}")
     public User getUserById(@PathVariable Long id) {
-        return userService.getUsersById(id)
-                .stream().findFirst().orElseThrow(() -> new RuntimeException("User not found with id: " + id))
-               ;
+        return userService.getUsersById(id).orElse(null);
+               
     }
 
-    @GetMapping("/{name}")
-    public User isUserNameTakenUser(@PathVariable String name) {
-        return userService.isUsernameTaken(name) ? userService.getUserByUsername(name) :
-        userService.getUserByUsername(name);
+@GetMapping("/username/{name}")
+    public User getUserByUsername(@PathVariable String name) {
+        return userService.getUserByUsername(name);
+  }
 
-    }
+  @GetMapping("/password/{username}")
+    public String getUserPassword(@PathVariable String username) {
+        return userService.getUserPassword(username);
+  }
 
-    public String helloUser() {
-        return "Hello, User!";
-    }
+
+    
     
    
 

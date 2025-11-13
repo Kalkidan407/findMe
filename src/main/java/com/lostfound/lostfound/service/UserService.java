@@ -25,8 +25,8 @@ public class UserService {
     }
     
 
-    public List<User> getUsersById(Long id){
-        return userRepository.findAllById(List.of(id));
+    public Optional<User> getUsersById(Long id){
+        return userRepository.findById(id);
     }
 
     public boolean isEmailTaken(String email) {
