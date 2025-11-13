@@ -16,7 +16,7 @@ public class ItemController {
 
     private final ItemService itemService;
 
-     @PostMapping
+    @PostMapping
     public Item createItem(@RequestBody Item item) {
         return itemService.addItem(item);
     }
@@ -26,7 +26,7 @@ public class ItemController {
         return itemService.getAllItems();
     }
 
-  @GetMapping("/{id}")
+   @GetMapping("/{id}")
   public Item getItemById(@PathVariable Long id){
     return itemService.getItemById(id)
          .orElseThrow(() -> new RuntimeException("Item not found with id: " + id));
