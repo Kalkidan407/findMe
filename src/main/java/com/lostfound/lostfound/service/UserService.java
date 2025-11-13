@@ -61,8 +61,15 @@ public User getUserByUsername(String username) {
     public void deleteAllUsers(){
         userRepository.deleteAll();
     }
-   
-    
 
-    
+    public User updateUser(Long id, User updatedUser){
+      return userRepository.findById(id)
+        .map(user -> {
+           user.setUsername(updatedUser.getUsername());
+           user.setEmail(updatedUser.getEmail());
+           user.setPassword(updatedUser.getPassword());
+           return userRepository.save(user);
+        }).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+    }
+
 }

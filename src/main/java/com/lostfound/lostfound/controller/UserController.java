@@ -2,6 +2,7 @@ package com.lostfound.lostfound.controller;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,7 +51,10 @@ private final UserService userService;
         return userService.getUserPassword(username);
   }
 
-
+  @DeleteMapping("/{id}")
+  public void deleteUserById(@PathVariable Long id){
+    userService.deleteUserById(id);
+  }
     
     
    

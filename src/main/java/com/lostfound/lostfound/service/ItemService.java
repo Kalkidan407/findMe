@@ -35,7 +35,7 @@ public class ItemService {
       itemRepository.deleteAll();
     }
 
-    public Item updaItem(Long id, Item updatedItem){
+    public Item updateItem(Long id, Item updatedItem){
       return itemRepository.findById(id)
         .map(item -> {
            item.setName(updatedItem.getName());
