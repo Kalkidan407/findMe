@@ -20,9 +20,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/category")
 public class CategoryController {
+
     public final CategoryService categoryService;
 
-    @PostMapping
+    @PostMapping("/create")
     public Category createCategory(@RequestBody Category category){
         return categoryService.addCategory(category);
     }
@@ -37,6 +38,13 @@ public class CategoryController {
       categoryService.deleteCategoryById(id);
     }
     
+  @DeleteMapping("/deleteAll")
+  public void deleteAllCategories(){
+    categoryService.deleteAllCategories();
+
+  }
+
+
     @PutMapping("/update/{id}")
     public Category updateCategory(@PathVariable Long id, @RequestBody Category updatedCategory){
       return categoryService.updateCategory(id, updatedCategory);

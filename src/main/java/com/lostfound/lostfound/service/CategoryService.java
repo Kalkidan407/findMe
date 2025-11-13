@@ -29,13 +29,17 @@ public class CategoryService {
       categoryRepository.deleteAll();
     }
 
-    public Category updateCategory(Long id, Category updatedCategory){
-      return categoryRepository.findById(id)
-        .map(category -> {
-           category.setName(updatedCategory.getName());
-    return categoryRepository.save(category);
+    
 
-        }).orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
-  }
+ public Category updateCategory(Long id, Category updatedCategory) {
+    return categoryRepository.findById(id)
+        .map(category -> {
+            category.setName(updatedCategory.getName());
+
+            return categoryRepository.save(category);
+        })
+        .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+}
+
 
 }
