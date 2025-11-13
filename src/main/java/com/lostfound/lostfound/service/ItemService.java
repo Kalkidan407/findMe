@@ -31,6 +31,22 @@ public class ItemService {
     public void deleteItemById(Long id){
       itemRepository.deleteById(id);
     }
+    public void deleteAllItems(){
+      itemRepository.deleteAll();
+    }
+
+    public Item updaItem(Long id, Item updatedItem){
+      return itemRepository.findById(id)
+        .map(item -> {
+           item.setName(updatedItem.getName());
+           item.setDescription(updatedItem.getDescription());
+           item.setLocationFound(updatedItem.getLocationFound());
+           item.setPhotoUrl(updatedItem.getPhotoUrl());
+            item.setStatus(updatedItem.isStatus());
+    return itemRepository.save(item);
+
+        }).orElseThrow(() -> new RuntimeException("Item not found with id: " + id));
+    }
 
 
 }

@@ -29,7 +29,10 @@
 	<properties>
 		<java.version>21</java.version>
 		<spring-ai.version>1.0.3</spring-ai.version>
+		
 	</properties>
+
+	
 	
   
 <dependencies>
@@ -43,6 +46,9 @@
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-hateoas</artifactId>
 </dependency>
+
+
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -68,12 +74,7 @@
         <scope>runtime</scope>
     </dependency>
 
-    <!-- Flyway Migration -->
-    <dependency>
-        <groupId>org.flywaydb</groupId>
-        <artifactId>flyway-core</artifactId>
-    </dependency>
-	
+ 
 
 	
 
