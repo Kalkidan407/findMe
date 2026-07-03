@@ -91,7 +91,7 @@ public class QuizGenerationService {
 				
 				{itemDetails}
 				
-				Generate ONE security verification question that:
+				Generate SIX security verification question that:
 				1. Cannot be guessed from the item name alone
 				2. Requires deep knowledge of the item (from the description and photo details)
 				3. Is specific to unique identifying features
