@@ -54,8 +54,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/x
     <artifactId>spring-ai-starter-model-google-genai</artifactId>
 </dependency>
 
-
-<!-- Added to fix NoClassDefFoundError: RetryTemplate -->
 <dependency>
   <groupId>org.springframework.retry</groupId>
   <artifactId>spring-retry</artifactId>
