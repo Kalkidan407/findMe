@@ -1,7 +1,9 @@
 package com.lostfound.lostfound.service;
 
 import java.nio.file.AccessDeniedException;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 
-
-import com.lostfound.lostfound.dto.item.ItemResponse;
 import com.lostfound.lostfound.dto.user.UserRequest;
 import com.lostfound.lostfound.dto.user.UserResponse;
 import com.lostfound.lostfound.model.Role;
@@ -37,16 +37,6 @@ private UserResponse toDTO(User user) {
  dto.setEmail(user.getEmail());
  dto.setRole(user.getRole());
  dto.setId(user.getId());
-
-List<ItemResponse> itemDtos = user.getItems() == null ? List.of(): user.getItems().stream().map(
-    item -> {
-        ItemResponse itemDto = new ItemResponse();
-        itemDto.setId(item.getId());
-        itemDto.setName(item.getName());
-       return itemDto;
-    }).toList();
-
-
         return dto;
     }
 
@@ -61,24 +51,19 @@ private User fromDTO(UserRequest request) {
         )
     );
      user.setRole(Role.USER);
- return user;
+  return user;
     
     }
 
      public UserResponse createUser(UserRequest dto) {
         User user =  fromDTO(dto);
-        User saved = userRepository.save(user);
+        User saved = userRepository.save(Objects.requireNonNull(user));
         return toDTO(saved);
      }
 
-    // public boolean isUsernameTaken(String username) {
-    
-    //     return userRepository.findByUsername(username) != null;
-    // }
-    
 @Transactional
     public UserResponse getUsersById(Long id){
-        User user = userRepository.findById(id)
+        User user = userRepository.findById(Objects.requireNonNull(id))
                      .orElseThrow(() -> new ResponseStatusException( 
                         HttpStatus.NOT_FOUND  ,"User not found with id:" + id));
         return toDTO(user);
@@ -97,7 +82,7 @@ private User fromDTO(UserRequest request) {
 
 
     public void saveUser(com.lostfound.lostfound.model.User user) {
-        userRepository.save(user);
+        userRepository.save(Objects.requireNonNull(user));
     }
 
 
@@ -110,19 +95,19 @@ private User fromDTO(UserRequest request) {
 
 
     public void deleteUserById(Long id){
-      User user = userRepository.findById(id)
+      User user = userRepository.findById(Objects.requireNonNull(id))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + id));
       user.setDeleted(true);
-      user.setDeletedAt(java.time.LocalDateTime.now());
-      userRepository.save(user);
+    user.setDeletedAt(java.time.LocalDateTime.now(ZoneId.of("UTC")));
+            userRepository.save(Objects.requireNonNull(user));
     }
     
     public void deleteAllUsers(){
-      userRepository.findAll().forEach(user -> {
-        user.setDeleted(true);
-        user.setDeletedAt(java.time.LocalDateTime.now());
-        userRepository.save(user);
-      });
+            userRepository.findAll().forEach(user -> {
+                user.setDeleted(true);
+                user.setDeletedAt(java.time.LocalDateTime.now(ZoneId.of("UTC")));
+                                userRepository.save(Objects.requireNonNull(user));
+            });
     }
 
  
@@ -130,20 +115,20 @@ private User fromDTO(UserRequest request) {
 
     public UserResponse updateUser(Long id, UserRequest updatedUser) throws AccessDeniedException {
 
-    Authentication auth = (Authentication) SecurityContextHolder.getContext().getAuthentication();
+      Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
            
-    String currentName = auth.getName();
+      String currentName = auth.getName();
 
-    User currentUser = userRepository.findByUsername(currentName)
+      User currentUser = userRepository.findByUsername(currentName)
             .orElseThrow();
 
-    boolean isAdmin = currentUser.getRole() == Role.ADMIN;
+      boolean isAdmin = currentUser.getRole() == Role.ADMIN;
 
-    if (!currentUser.getId().equals(id) && !isAdmin) {
+       if (!currentUser.getId().equals(id) && !isAdmin) {
         throw new AccessDeniedException("Not allowed");
     }
 
-    User user = userRepository.findById(id)
+        User user = userRepository.findById(Objects.requireNonNull(id))
             .orElseThrow(() -> new RuntimeException("User not found"));
 
     user.setUsername(updatedUser.getName());
