@@ -2,6 +2,7 @@ package com.lostfound.lostfound.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,7 +28,7 @@ import org.springframework.ai.chat.prompt.PromptTemplate;
 @Slf4j
 public class QuizGenerationService {
 
-	private final ChatModel chatModel;
+	private final ObjectProvider<ChatModel> chatModelProvider;
 	private final ItemRepository itemRepository;
 	private final QuizService quizService;
 	private final ObjectMapper objectMapper;
@@ -107,6 +108,12 @@ public class QuizGenerationService {
 				""";
 
 		try {
+			ChatModel chatModel = chatModelProvider.getIfAvailable();
+			if (chatModel == null) {
+				log.warn("ChatModel is not available; using fallback quiz content for item {}", item.getId());
+				return createFallbackQuizJson(itemDetails);
+			}
+
 			PromptTemplate promptTemplate = new PromptTemplate(template);
 			Prompt prompt = promptTemplate.create(java.util.Map.of("itemDetails", itemDetails));
 
@@ -134,6 +141,15 @@ public class QuizGenerationService {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
 					"Failed to generate quiz: " + e.getMessage());
 		}
+	}
+
+	private String createFallbackQuizJson(String itemDetails) {
+		String fallbackQuestion = "What is the most distinctive detail mentioned about the item?";
+		String fallbackAnswer = itemDetails.length() > 120
+				? itemDetails.substring(0, 120).replace("\n", " ").trim()
+				: itemDetails.replace("\n", " ").trim();
+
+		return "{\"question\":\"" + fallbackQuestion + "\",\"answer\":\"" + fallbackAnswer.replace("\"", "\\\"") + "\"}";
 	}
 
 	private QuizResponse parseAndCreateQuiz(String quizJson, Item item) {
