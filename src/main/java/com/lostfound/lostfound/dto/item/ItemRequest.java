@@ -15,7 +15,6 @@ public class ItemRequest {
     @Size(max = 2000, message = "description too long")
     private String description;
     
-    @Size(min = 2, message = "at least 2 photos are required")
     @Size(max = 10, message = "maximum 10 photos allowed")
     private List<String> photos;
     

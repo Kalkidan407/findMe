@@ -1,6 +1,8 @@
 package com.lostfound.lostfound.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.lostfound.lostfound.dto.item.ItemRequest;
 import com.lostfound.lostfound.dto.item.ItemResponse;
@@ -36,6 +39,7 @@ public class ItemService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepo;
     private final LocationRepository locationRepo;
+    private final FileStorageService fileStorageService;
 
     private User getCurrentUser() {
       
@@ -138,16 +142,39 @@ private ItemResponse toDTO(Item item) {
         return toDTO(savedItem);
     }
 
+    @Transactional
+    @CacheEvict(value = "items", allEntries = true)
+    public List<String> uploadPhotos(Long itemId, List<MultipartFile> files) {
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new RuntimeException("Item not found"));
 
-  @Transactional
-      @CacheEvict(value = {"items", "item"}, allEntries = true)  
-    public  ItemResponse getItemById(Long id) {
+        if (files == null || files.isEmpty()) {
+            throw new RuntimeException("At least one photo file is required");
+        }
+
+        List<String> existingPhotos = item.getPhotos() == null ? new ArrayList<>() : new ArrayList<>(item.getPhotos());
+        if (existingPhotos.size() + files.size() > 10) {
+            throw new RuntimeException("maximum 10 photos allowed");
+        }
+
+        try {
+            List<String> uploadedUrls = fileStorageService.storeFiles(files);
+            existingPhotos.addAll(uploadedUrls);
+            item.setPhotos(existingPhotos);
+            itemRepository.save(item);
+            return uploadedUrls;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload photos", e);
+        }
+    }
+
+    @Transactional
+    @CacheEvict(value = {"items", "item"}, allEntries = true)
+    public ItemResponse getItemById(Long id) {
         return itemRepository.findById(id)
                 .map(this::toDTO)
                 .orElseThrow(() -> new RuntimeException("Item not found"));
     }
-
-  
 
     public void deleteItemById(Long id) {
 

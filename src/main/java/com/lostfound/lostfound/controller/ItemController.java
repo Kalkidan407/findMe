@@ -3,10 +3,10 @@ package com.lostfound.lostfound.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.*;
 
- import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Page;
 
 import com.lostfound.lostfound.dto.item.ItemRequest;
 import com.lostfound.lostfound.dto.item.ItemResponse;
@@ -26,6 +26,13 @@ public class ItemController{
     public ResponseEntity<ItemResponse> addItem(@RequestBody ItemRequest dto) {
         ItemResponse created = itemService.addItem(dto);
         return ResponseEntity.ok(created);
+    }
+
+    @PostMapping("/{id}/photos")
+    public ResponseEntity<java.util.List<String>> uploadPhotos(
+            @PathVariable Long id,
+            @RequestParam("files") java.util.List<MultipartFile> files) {
+        return ResponseEntity.ok(itemService.uploadPhotos(id, files));
     }
 
 
